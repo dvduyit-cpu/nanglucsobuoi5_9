@@ -1,0 +1,593 @@
+<!doctype html><html lang='vi'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>AI ứng dụng theo chuyên ngành - Buổi 5 đến 9</title><style>
+:root{--bg:#f4faff;--p:#fff;--b:#0b5fa5;--b2:#1686d9;--t:#183247;--m:#5d7385;--l:#d9eaf5;--g:#15803d;--a:#a16207;--r:#b42318}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:var(--bg);color:var(--t);font-size:19px;line-height:1.62}header{background:linear-gradient(135deg,var(--b),var(--b2));color:#fff;padding:24px;position:sticky;top:0;z-index:20;box-shadow:0 5px 18px #0002}.head{max-width:1500px;margin:auto;display:flex;justify-content:space-between;gap:20px;align-items:center}h1{font-size:29px;margin:0}header p{margin:6px 0 0;font-size:16px}.controls{display:flex;gap:8px;flex-wrap:wrap}button{border:0;border-radius:11px;padding:10px 14px;font-size:16px;font-weight:700;cursor:pointer}.light{background:#fff;color:var(--b)}.ghost{background:#ffffff22;color:#fff;border:1px solid #ffffff66}.layout{max-width:1450px;margin:20px auto;display:grid;grid-template-columns:300px 1fr;gap:20px;padding:0 18px 40px}aside{position:sticky;top:115px;align-self:start;background:#fff;border:1px solid var(--l);border-radius:18px;padding:15px;box-shadow:0 7px 22px #0b5fa511}aside h3{font-size:18px;color:var(--b);margin:2px 4px 10px}.nav{width:100%;text-align:left;margin:5px 0;background:#f7fbfe;color:var(--t);border:1px solid var(--l)}.nav.active{background:var(--b);color:#fff}.session{display:none}.session.active{display:block}.hero{background:linear-gradient(135deg,#e7f5ff,#fff);border:1px solid var(--l);border-radius:19px;padding:22px;margin-bottom:16px}.hero h2{font-size:33px;color:var(--b);margin:0 0 7px}.badges{display:flex;gap:8px;flex-wrap:wrap}.badge{background:#dff1ff;border:1px solid #bfe4ff;border-radius:999px;padding:5px 10px;font-size:15px;font-weight:700;color:#084f87}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tab{background:#fff;color:var(--b);border:1px solid #badcf3}.tab.active{background:var(--b);color:#fff}.period{display:none}.period.active{display:block}.card{background:#fff;border:1px solid var(--l);border-radius:17px;padding:20px;margin:13px 0;box-shadow:0 5px 16px #0f48690d}.card h3{font-size:25px;color:var(--b);margin:0 0 8px}.card h4{font-size:20px;color:#174f79;margin:12px 0 5px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.box{border:1px solid var(--l);border-radius:14px;padding:15px;background:#fbfdff}.log{border-left:6px solid #1678c8}.fin{border-left:6px solid var(--g)}.act{border-left:6px solid var(--a);background:#fffaf0}.teach{border-left:6px solid #7c3aed;background:#faf7ff}.q{border-left:6px solid var(--r);background:#fff7f6}.timeline{display:grid;grid-template-columns:105px 1fr;gap:10px;margin:7px 0}.time{font-weight:800;color:var(--b)}ul,ol{padding-left:24px}li{margin:5px 0}table{width:100%;border-collapse:collapse;font-size:17px;margin:10px 0}th,td{border:1px solid var(--l);padding:10px;vertical-align:top}th{background:#eaf6ff;color:var(--b)}details{border:1px solid var(--l);border-radius:11px;padding:11px 13px;margin:9px 0;background:#fff}summary{font-weight:800;color:var(--b);cursor:pointer}.timer{font-size:27px;font-weight:800;color:var(--b)}.quiz{border-top:1px solid var(--l);padding-top:12px;margin-top:14px}.quiz-option{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--l);margin:7px 0;padding:11px 13px;color:var(--t)}.quiz-option:hover{background:#eef8ff}.quiz-option:disabled{cursor:default;opacity:.78}.quiz-feedback{font-weight:800;margin:8px 0 15px}.ok{color:var(--g)}.bad{color:var(--r)}
+.custom-timer{
+  margin-top:12px;padding-top:12px;border-top:1px solid var(--l)
+}
+.custom-timer label{
+  display:block;font-size:15px;font-weight:800;color:var(--b);margin-bottom:6px
+}
+.custom-timer-row{
+  display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center
+}
+.custom-timer input{
+  width:100%;min-width:0;border:1px solid var(--l);border-radius:10px;
+  padding:10px 11px;font-size:16px;color:var(--t);background:#fff
+}
+.custom-start{
+  background:var(--g);color:#fff;white-space:nowrap
+}
+.timer-stop{
+  width:100%;margin-top:7px;background:#fff0f0;color:var(--r);border:1px solid #f4c7c7
+}
+.timeup-overlay{
+  display:none;position:fixed;inset:0;background:rgba(8,35,58,.76);z-index:9999;
+  align-items:center;justify-content:center;padding:24px
+}
+.timeup-overlay.show{display:flex}
+.timeup-box{
+  width:min(720px,96vw);background:#fff;border-radius:24px;padding:34px 28px;
+  text-align:center;border:4px solid var(--r);box-shadow:0 18px 60px #0005
+}
+.timeup-icon{font-size:64px;line-height:1;margin-bottom:8px}
+.timeup-title{font-size:42px;font-weight:900;color:var(--r);margin:4px 0 8px}
+.timeup-text{font-size:22px;margin:0 0 20px;color:var(--t)}
+.timeup-close{
+  background:var(--b);color:#fff;border:0;border-radius:14px;
+  padding:14px 26px;font-size:20px;font-weight:800;min-width:180px
+}
+@media(max-width:600px){
+  .custom-timer-row{grid-template-columns:1fr}
+  .timeup-title{font-size:32px}.timeup-text{font-size:19px}.timeup-icon{font-size:50px}
+}
+
+.gift-qa{margin-top:18px;border-top:2px dashed var(--l);padding-top:16px}
+.gift-item{border:1px solid var(--l);border-radius:14px;padding:12px 14px;margin:10px 0;background:#fff}
+.gift-question{font-weight:800;color:var(--t);margin-bottom:9px}
+.gift-btn{background:#fff7d6;color:#7a4b00;border:1px solid #f1cf68;width:100%;text-align:left}
+.gift-answer{display:none;margin-top:10px;padding:12px 14px;border-radius:12px;background:#f2fbf5;border-left:5px solid var(--g);font-weight:700}
+.gift-item.open .gift-answer{display:block}
+.gift-item.open .gift-btn{background:#e9f7ee;color:var(--g);border-color:#b9e0c4}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}aside{position:static}header{position:static}.head{display:block}.controls{margin-top:10px}}@media print{header,aside,.tabs{display:none!important}.layout{display:block;margin:0;padding:0}.session,.period{display:block!important}.card{box-shadow:none;break-inside:avoid}body{font-size:13px}}
+
+h1,h2,h3,h4,button,input,table,summary{
+  font-family:'Segoe UI',Tahoma,Arial,sans-serif;
+}
+body{
+  font-variant-ligatures:none;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ===== BỐ CỤC GỌN & MENU ẨN/HIỆN ===== */
+.layout{
+  max-width:1500px;
+  margin:16px auto;
+  display:grid;
+  grid-template-columns:280px minmax(0,1fr);
+  gap:16px;
+  padding:0 16px 32px;
+  transition:grid-template-columns .25s ease;
+}
+.layout.menu-collapsed{
+  grid-template-columns:0 minmax(0,1fr);
+}
+.layout.menu-collapsed aside{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translateX(-16px);
+  padding:0;
+  border:0;
+  overflow:hidden;
+}
+aside{
+  transition:all .25s ease;
+  border-radius:14px;
+  padding:12px;
+}
+main{
+  width:100%;
+  max-width:1180px;
+  margin:0 auto;
+}
+.card{
+  padding:16px 18px;
+  margin:10px 0;
+  border-radius:14px;
+}
+.hero{
+  padding:18px 20px;
+  margin-bottom:12px;
+  border-radius:16px;
+}
+.hero h2{font-size:30px}
+.card h3{font-size:23px}
+.card h4{font-size:19px}
+.grid2{gap:12px}
+.box{padding:13px}
+.timeline{grid-template-columns:95px 1fr;gap:8px;margin:6px 0}
+table{font-size:16px}
+th,td{padding:8px 9px}
+.tabs{gap:6px;margin:10px 0 12px}
+.tab{padding:9px 12px}
+.nav{padding:9px 11px;margin:4px 0}
+.gift-item{padding:10px 12px;margin:8px 0}
+.gift-btn{padding:9px 11px}
+.controls{align-items:center}
+.menu-toggle{
+  background:#fff;
+  color:var(--b);
+  border:1px solid #d8e7f2;
+}
+.menu-toggle:hover{background:#eef7ff}
+.menu-mini{
+  position:sticky;
+  top:110px;
+  align-self:start;
+  z-index:15;
+}
+.menu-collapsed .menu-mini{
+  display:block;
+}
+.menu-mini{
+  display:none;
+}
+.compact-note{
+  font-size:14px;
+  color:var(--m);
+}
+@media(max-width:950px){
+  .layout,.layout.menu-collapsed{grid-template-columns:1fr}
+  .layout.menu-collapsed aside{
+    display:none;
+  }
+  aside{
+    position:static;
+    opacity:1;
+    visibility:visible;
+    transform:none;
+  }
+  .menu-mini{display:none!important}
+  main{max-width:none}
+}
+
+
+/* ===== SỬA MENU CHỈ ẨN CỘT TRÁI + HEADER NHỎ ===== */
+header{
+  padding:12px 16px;
+}
+.head{
+  max-width:1500px;
+  gap:14px;
+}
+h1{
+  font-size:23px;
+  line-height:1.2;
+}
+header p{
+  margin:3px 0 0;
+  font-size:14px;
+}
+.controls{
+  gap:6px;
+}
+.controls button{
+  padding:7px 10px;
+  font-size:14px;
+  border-radius:9px;
+}
+
+.layout{
+  position:relative;
+  grid-template-columns:280px minmax(0,1fr);
+  gap:16px;
+  transition:none;
+}
+.layout.menu-collapsed{
+  grid-template-columns:minmax(0,1fr);
+}
+.layout.menu-collapsed aside{
+  display:none !important;
+}
+.layout.menu-collapsed main{
+  grid-column:1;
+  width:100%;
+  max-width:1180px;
+  margin:0 auto;
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  transform:none !important;
+}
+
+.menu-mini{
+  display:none;
+  position:fixed;
+  left:10px;
+  top:72px;
+  z-index:40;
+  padding:8px 10px;
+  border-radius:10px;
+  background:#fff;
+  color:var(--b);
+  border:1px solid #d8e7f2;
+  box-shadow:0 4px 12px #0002;
+}
+.layout.menu-collapsed .menu-mini{
+  display:block !important;
+}
+
+@media(max-width:950px){
+  header{padding:10px 12px}
+  h1{font-size:20px}
+  header p{font-size:13px}
+  .layout,.layout.menu-collapsed{
+    grid-template-columns:1fr;
+  }
+  .layout aside{
+    display:block;
+  }
+  .layout.menu-collapsed aside{
+    display:none !important;
+  }
+  .menu-mini{
+    top:64px;
+  }
+}
+
+</style></head><body><header><div class='head'><div><h1>AI ỨNG DỤNG THEO CHUYÊN NGÀNH · BUỔI 5–9</h1><p>Logistics & Quản lý chuỗi cung ứng · Tài chính – Ngân hàng · 5 tiết/buổi · 45 phút/tiết</p></div><div class='controls'><button id='menuToggle' class='menu-toggle' type='button'>☰ Ẩn menu</button><button class='light' onclick='window.print()'>In giáo án</button><button class='ghost' onclick='fontSize()'>A+/A−</button><button class='ghost' onclick='timer(10)'>Hẹn giờ 10'</button></div></div></header><div class='layout'><button id='menuMini' class='menu-mini' type='button'>☰ Menu</button><aside><h3>CHỌN BUỔI DẠY</h3><button class='nav active' data-s='s5'>Buổi 5 · AI trong chuyên ngành</button><button class='nav' data-s='s6'>Buổi 6 · Workflow AI chuyên ngành</button><button class='nav' data-s='s7'>Buổi 7 · Mini Project chuyên ngành</button><button class='nav' data-s='s8'>Buổi 8 · AI có trách nhiệm & Công dân số</button><button class='nav' data-s='s9'>Buổi 9 · Digital Competency Showcase</button><div class='card' style='padding:13px'><b>Đồng hồ hoạt động nhóm</b><div id='timer' class='timer'>10:00</div><button class='nav' onclick='timer(5)'>5 phút</button><button class='nav' onclick='timer(10)'>10 phút</button><button class='nav' onclick='timer(15)'>15 phút</button>
+<div class='custom-timer'>
+  <label for='customMinutes'>Tự đặt thời gian (phút)</label>
+  <div class='custom-timer-row'>
+    <input id='customMinutes' type='number' min='1' max='180' step='1' value='20' inputmode='numeric'>
+    <button id='customStart' class='custom-start' type='button'>Bắt đầu</button>
+  </div>
+  <button id='timerStop' class='timer-stop' type='button'>Dừng / đặt lại</button>
+</div></div></aside><main>
+<section id='s5' class='session active'><div class='hero'><h2>BUỔI 5 · AI TRONG CHUYÊN NGÀNH</h2><p><b>Mục tiêu:</b> Nhận biết bài toán AI phù hợp trong chuyên ngành; chọn công cụ; viết yêu cầu rõ ràng; kiểm tra đầu ra AI.</p><div class='badges'><span class='badge'>5 tiết × 45 phút</span><span class='badge'>Nhóm 4–5 SV</span><span class='badge'>Không yêu cầu lập trình</span></div></div><div class='tabs'></div>
+<div class='period'>
+<div class='card'>
+<h3>Tiết 1 · Nhận diện bài toán AI trong công việc chuyên ngành</h3>
+<p><b>Mục tiêu:</b> Sau 45 phút, sinh viên nhận biết được các nhóm công việc phù hợp với AI, phân biệt AI hỗ trợ và AI ra quyết định, đồng thời lập được bản đồ 8–10 nhiệm vụ có thể ứng dụng AI trong chuyên ngành.</p>
+<div class='timeline'><div class='time'>0–8 phút</div><div><b>Khởi động:</b> AI đang xuất hiện ở đâu trong công việc?</div></div>
+<div class='timeline'><div class='time'>8–20 phút</div><div><b>Nội dung 1:</b> 5 nhóm nhiệm vụ AI thường hỗ trợ.</div></div>
+<div class='timeline'><div class='time'>20–27 phút</div><div><b>Nội dung 2:</b> AI hỗ trợ hay AI ra quyết định?</div></div>
+<div class='timeline'><div class='time'>27–39 phút</div><div><b>Hoạt động nhóm:</b> Bản đồ 10 nhiệm vụ AI.</div></div>
+<div class='timeline'><div class='time'>39–43 phút</div><div><b>Trình bày nhanh:</b> Mỗi nhóm báo cáo 3 ý.</div></div>
+<div class='timeline'><div class='time'>43–45 phút</div><div><b>Củng cố:</b> Câu hỏi tương tác và giao bài tập.</div></div>
+</div>
+
+<div class='card'>
+<h3>1. Khởi động · AI đang xuất hiện ở đâu trong công việc?</h3>
+<div class='box teach'><h4>Lời dẫn giảng viên</h4><p>“Nếu ngày mai các em đi làm tại một doanh nghiệp logistics, ngân hàng hoặc công ty tài chính, việc nào các em nghĩ sẽ tốn nhiều thời gian nhất?”</p></div>
+<div class='grid2'>
+<div class='box log'><h4>Logistics & QLCCU</h4><ul><li>Đọc nhiều email và phiếu giao nhận.</li><li>Theo dõi tình trạng đơn hàng.</li><li>Tổng hợp dữ liệu tồn kho.</li><li>So sánh nhà cung cấp.</li><li>Tìm nguyên nhân giao hàng trễ.</li></ul></div>
+<div class='box fin'><h4>Tài chính – Ngân hàng</h4><ul><li>Đọc và tóm tắt hồ sơ.</li><li>Phân loại phản hồi khách hàng.</li><li>So sánh sản phẩm tài chính.</li><li>Tổng hợp báo cáo.</li><li>Chuẩn bị nội dung tư vấn.</li></ul></div>
+</div>
+<div class='box q'><h4>Câu hỏi gọi sinh viên</h4><ol><li>Công việc nào lặp đi lặp lại nhiều nhất?</li><li>Công việc nào phải đọc rất nhiều dữ liệu?</li><li>Công việc nào cần tạo bản nháp nhanh?</li><li>Công việc nào vẫn bắt buộc con người chịu trách nhiệm?</li></ol></div>
+</div>
+
+<div class='card'>
+<h3>2. Năm nhóm nhiệm vụ AI thường hỗ trợ</h3>
+<table>
+<tr><th>Nhóm nhiệm vụ</th><th>Giải thích</th><th>Ví dụ Logistics</th><th>Ví dụ Tài chính – Ngân hàng</th></tr>
+<tr><td><b>1. Tìm kiếm – tóm tắt</b></td><td>Đọc tài liệu dài, rút ý chính, tạo checklist.</td><td>Tóm tắt báo cáo tồn kho, hợp đồng vận chuyển.</td><td>Tóm tắt báo cáo tài chính, hồ sơ khách hàng.</td></tr>
+<tr><td><b>2. Tạo nội dung</b></td><td>Soạn email, báo cáo, biên bản, kịch bản.</td><td>Email thông báo giao trễ, checklist ca kho.</td><td>Nội dung tư vấn, ghi chú cuộc gọi.</td></tr>
+<tr><td><b>3. Phân tích dữ liệu</b></td><td>Tìm xu hướng, nhóm dữ liệu, so sánh chỉ số.</td><td>Đơn trễ, tuyến chi phí cao, SKU chậm luân chuyển.</td><td>Xu hướng giao dịch, nhóm phản hồi, biến động chi tiêu.</td></tr>
+<tr><td><b>4. Dự đoán</b></td><td>Hỗ trợ ước tính xu hướng hoặc rủi ro.</td><td>Dự báo nhu cầu và lượng đơn.</td><td>Dự báo nhu cầu sản phẩm, cảnh báo bất thường ở mức hỗ trợ.</td></tr>
+<tr><td><b>5. Hỗ trợ quyết định</b></td><td>Đưa ra phương án, so sánh ưu–nhược điểm.</td><td>So sánh nhà cung cấp.</td><td>So sánh phương án sản phẩm phù hợp nhu cầu.</td></tr>
+</table>
+<div class='box teach'><h4>Điểm cần nhấn mạnh</h4><p>“Dự đoán không có nghĩa là AI luôn đúng. AI chỉ hỗ trợ dựa trên dữ liệu được cung cấp.”</p></div>
+</div>
+
+<div class='card'>
+<h3>3. AI hỗ trợ ≠ AI chịu trách nhiệm</h3>
+<div class='grid2'>
+<div class='box log'><h4>Ví dụ Logistics</h4><p>AI có thể đề xuất tuyến giao hàng, nhưng người phụ trách vẫn phải kiểm tra tải trọng, điều kiện đường, thời gian giao nhận, dữ liệu khách hàng và tình hình thực tế.</p></div>
+<div class='box fin'><h4>Ví dụ Tài chính – Ngân hàng</h4><p>AI có thể tóm tắt thông tin và gợi ý yếu tố cần xem xét, nhưng không được tự quyết định cấp tín dụng, phê duyệt giao dịch hoặc xử lý hồ sơ rủi ro cao.</p></div>
+</div>
+<div class='box q'><h4>Thảo luận 3 phút</h4><p><b>Nêu một công việc trong ngành mà AI chỉ nên hỗ trợ, tuyệt đối không được tự quyết định.</b></p></div>
+</div>
+
+<div class='card'>
+<h3>4. Hoạt động nhóm · Bản đồ 10 nhiệm vụ AI</h3>
+<p><b>Chia nhóm:</b> 4–5 sinh viên. Mỗi nhóm lập tối thiểu 8–10 nhiệm vụ theo mẫu:</p>
+<table><tr><th>Nhiệm vụ trong ngành</th><th>AI có thể hỗ trợ gì?</th><th>Con người phải kiểm tra gì?</th></tr>
+<tr><td>Phân tích giao hàng trễ</td><td>Tổng hợp và nhóm nguyên nhân</td><td>Kiểm tra dữ liệu thực tế, chọn hành động</td></tr>
+<tr><td>Tư vấn sản phẩm</td><td>Soạn nội dung nháp, bảng so sánh</td><td>Kiểm tra quy định và tính chính xác</td></tr></table>
+<div class='grid2'>
+<div class='box log'><h4>10 gợi ý Logistics & QLCCU</h4><ol><li>Dự báo nhu cầu.</li><li>Theo dõi tồn kho.</li><li>Phân tích giao hàng trễ.</li><li>Lập lịch giao hàng.</li><li>So sánh nhà cung cấp.</li><li>Tóm tắt báo cáo kho.</li><li>Viết email khách hàng.</li><li>Phân loại sự cố.</li><li>Xử lý khiếu nại.</li><li>Tổng hợp dữ liệu vận chuyển.</li></ol></div>
+<div class='box fin'><h4>10 gợi ý Tài chính – Ngân hàng</h4><ol><li>Tóm tắt báo cáo tài chính.</li><li>Phân loại khách hàng.</li><li>Tổng hợp phản hồi.</li><li>Viết nội dung tư vấn.</li><li>Chuẩn bị hồ sơ.</li><li>Phân tích biến động chi tiêu.</li><li>So sánh sản phẩm.</li><li>Chuẩn hóa ghi chú cuộc gọi.</li><li>Tạo báo cáo sơ bộ.</li><li>Nhận diện dữ liệu bất thường.</li></ol></div>
+</div>
+<div class='box act'><h4>Cách tổ chức</h4><p>Cho nhóm <b>10 phút</b>. Sau đó mỗi nhóm trình bày 3 ý: một việc AI làm tốt, một việc AI chỉ hỗ trợ và một việc không nên để AI tự quyết định.</p></div>
+</div>
+
+<div class='card'>
+<h3>5. Kiểm tra nhanh tương tác</h3>
+<div class='quiz' data-answer='1'><p><b>Câu 1.</b> AI phù hợp nhất với loại công việc nào?</p><button type='button' class='quiz-option' data-i='0'>A. Công việc không có dữ liệu</button><button type='button' class='quiz-option' data-i='1'>B. Công việc nhiều dữ liệu và lặp lại</button><button type='button' class='quiz-option' data-i='2'>C. Công việc cần quyết định pháp lý cuối cùng</button><div class='quiz-feedback'></div></div>
+<div class='quiz' data-answer='3'><p><b>Câu 2.</b> AI có thể hỗ trợ gì trong logistics?</p><button type='button' class='quiz-option' data-i='0'>A. Tóm tắt tồn kho</button><button type='button' class='quiz-option' data-i='1'>B. Phân tích đơn hàng trễ</button><button type='button' class='quiz-option' data-i='2'>C. So sánh nhà cung cấp</button><button type='button' class='quiz-option' data-i='3'>D. Tất cả các phương án trên</button><div class='quiz-feedback'></div></div>
+<div class='quiz' data-answer='0'><p><b>Câu 3.</b> AI có nên tự quyết định phê duyệt tín dụng không?</p><button type='button' class='quiz-option' data-i='0'>A. Không</button><button type='button' class='quiz-option' data-i='1'>B. Có, nếu AI tự tin</button><div class='quiz-feedback'></div></div>
+<div class='quiz' data-answer='2'><p><b>Câu 4.</b> Một đầu ra AI tốt cần điều gì?</p><button type='button' class='quiz-option' data-i='0'>A. Càng dài càng tốt</button><button type='button' class='quiz-option' data-i='1'>B. Không cần nguồn dữ liệu</button><button type='button' class='quiz-option' data-i='2'>C. Có thể kiểm tra và có người xác nhận</button><div class='quiz-feedback'></div></div>
+<details><summary>Câu 5 · Câu hỏi mở</summary><p>Hãy nêu một nhiệm vụ trong ngành của bạn mà AI có thể hỗ trợ và giải thích phần nào con người vẫn phải kiểm tra.</p></details>
+</div>
+
+<div class='card'><h3>6. Bài tập về nhà</h3><p>Chọn <b>01 công việc thực tế trong ngành</b> và trả lời:</p><ol><li>Công việc đó là gì?</li><li>Người lao động đang làm những bước nào?</li><li>Bước nào có thể dùng AI?</li><li>AI cần dữ liệu gì?</li><li>Con người phải kiểm tra phần nào?</li></ol><p><b>Yêu cầu:</b> khoảng 1 trang A4.</p></div>
+
+<div class='card'><h3>Thông điệp kết tiết</h3><div class='box teach'><p>“AI không thay thế toàn bộ công việc. Giá trị thực sự của AI nằm ở việc giúp chúng ta đọc nhanh hơn, phân tích nhanh hơn, tạo bản nháp nhanh hơn và ra quyết định có cơ sở hơn. Người làm nghề vẫn phải hiểu chuyên môn, kiểm tra dữ liệu và chịu trách nhiệm cuối cùng.”</p></div></div>
+<div class='card'><h3>Bài tập nhóm 30 phút · Tiết 1</h3>
+<p><b>Chủ đề:</b> Bản đồ ứng dụng AI trong công việc chuyên ngành.</p>
+<div class='grid2'><div class='box act'><h4>Phân vai nhóm 4–5 sinh viên</h4><ol>
+<li><b>Nhóm trưởng:</b> điều phối thời gian, chốt nhiệm vụ.</li>
+<li><b>Người phân tích nghiệp vụ:</b> liệt kê công việc thực tế.</li>
+<li><b>Người phụ trách AI:</b> xác định AI hỗ trợ ở bước nào.</li>
+<li><b>Người kiểm soát rủi ro:</b> xác định phần con người phải kiểm tra.</li>
+<li><b>Người trình bày:</b> chuẩn bị báo cáo 2 phút.</li></ol></div>
+<div class='box q'><h4>Phân bổ 30 phút</h4><ul><li>5 phút: chọn bối cảnh doanh nghiệp.</li><li>10 phút: liệt kê 10 nhiệm vụ.</li><li>8 phút: phân loại AI hỗ trợ / không nên tự quyết định.</li><li>5 phút: hoàn thiện bảng.</li><li>2 phút: chuẩn bị trình bày.</li></ul></div></div>
+<p><b>Sản phẩm:</b> Bảng 10 nhiệm vụ gồm 3 cột: Nhiệm vụ – AI hỗ trợ gì – Con người kiểm tra gì.</p>
+<p><b>Tiêu chí:</b> đúng chuyên ngành 3đ; rõ vai trò AI 3đ; nhận diện rủi ro 2đ; trình bày 2đ.</p></div><div class='card gift-qa'><h3>10 câu hỏi ôn tập · Tiết 1</h3><p>Bấm vào từng <b>hộp quà 🎁</b> để mở hoặc ẩn đáp án.</p><div class='gift-item'><div class='gift-question'>Câu 1. AI phù hợp nhất với loại công việc nào?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Các công việc nhiều dữ liệu, lặp lại, cần tóm tắt, phân loại, so sánh hoặc tạo bản nháp.</div></div><div class='gift-item'><div class='gift-question'>Câu 2. Trong Logistics, AI có thể hỗ trợ theo dõi tồn kho như thế nào?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: AI có thể tóm tắt tồn kho, phát hiện SKU chậm luân chuyển và cảnh báo bất thường.</div></div><div class='gift-item'><div class='gift-question'>Câu 3. Trong Tài chính – Ngân hàng, AI có thể hỗ trợ phản hồi khách hàng ra sao?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: AI có thể phân loại phản hồi, tóm tắt nội dung và gợi ý nội dung trả lời sơ bộ.</div></div><div class='gift-item'><div class='gift-question'>Câu 4. AI có nên tự quyết định phê duyệt tín dụng không?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Không. AI chỉ nên hỗ trợ phân tích; quyết định cuối cùng phải do người có thẩm quyền.</div></div><div class='gift-item'><div class='gift-question'>Câu 5. Vì sao công việc nhiều dữ liệu phù hợp với AI?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Vì AI có thể đọc, nhóm, tóm tắt và phát hiện mẫu nhanh hơn khi có dữ liệu đầu vào rõ.</div></div><div class='gift-item'><div class='gift-question'>Câu 6. AI có thể thay hoàn toàn con người trong công việc chuyên môn không?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Không. Con người vẫn cần kiểm tra dữ liệu, bối cảnh và chịu trách nhiệm cuối cùng.</div></div><div class='gift-item'><div class='gift-question'>Câu 7. Một ví dụ AI hỗ trợ ra quyết định trong Logistics là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: So sánh nhà cung cấp theo giá, thời gian giao, tỷ lệ lỗi và độ ổn định.</div></div><div class='gift-item'><div class='gift-question'>Câu 8. Một ví dụ AI hỗ trợ tạo nội dung trong ngân hàng là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Soạn bản nháp email hoặc kịch bản tư vấn sản phẩm cho khách hàng.</div></div><div class='gift-item'><div class='gift-question'>Câu 9. Khi nào không nên dùng AI tự động hoàn toàn?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Khi liên quan quyết định pháp lý, tài chính quan trọng, dữ liệu nhạy cảm hoặc rủi ro cao.</div></div><div class='gift-item'><div class='gift-question'>Câu 10. Nguyên tắc quan trọng nhất khi dùng AI trong chuyên ngành là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Dùng AI để hỗ trợ, luôn kiểm tra kết quả và giữ con người trong vòng kiểm soát.</div></div></div></div>
+<div class='period'>
+<div class='card'>
+<h3>Tiết 2 · Viết prompt theo ngữ cảnh chuyên ngành</h3>
+<p><b>Mục tiêu:</b> Sinh viên biết biến một yêu cầu mơ hồ thành prompt rõ ràng, có bối cảnh, dữ liệu, ràng buộc, định dạng đầu ra và tiêu chí kiểm tra.</p>
+<div class='timeline'><div class='time'>0–6 phút</div><div><b>Khởi động:</b> So sánh prompt yếu và prompt tốt.</div></div>
+<div class='timeline'><div class='time'>6–18 phút</div><div><b>Nội dung 1:</b> Cấu trúc prompt 6 thành phần.</div></div>
+<div class='timeline'><div class='time'>18–28 phút</div><div><b>Nội dung 2:</b> Ví dụ prompt cho Logistics và Tài chính – Ngân hàng.</div></div>
+<div class='timeline'><div class='time'>28–40 phút</div><div><b>Thực hành nhóm:</b> Viết – chạy – sửa prompt qua 3 vòng.</div></div>
+<div class='timeline'><div class='time'>40–45 phút</div><div><b>Củng cố:</b> Quiz nhanh + chốt nguyên tắc.</div></div>
+</div>
+<div class='card'><h3>1. Khởi động · Vì sao prompt mơ hồ cho kết quả kém?</h3>
+<div class='box teach'><h4>Lời dẫn giảng viên</h4><p>“Nếu các em chỉ nói với AI: <i>phân tích giúp tôi</i>, AI sẽ không biết phân tích cái gì, cho ai, theo tiêu chí nào và phải trình bày ra sao. Prompt tốt là cách chúng ta giảm hiểu nhầm.”</p></div>
+<table><tr><th>Prompt yếu</th><th>Prompt cải tiến</th></tr>
+<tr><td>“Phân tích tồn kho.”</td><td>“Bạn là chuyên viên quản lý kho. Dựa trên bảng tồn kho tháng 9, hãy xác định 5 SKU có nguy cơ tồn lâu nhất, nêu nguyên nhân khả dĩ và đề xuất hành động. Trình bày thành bảng 4 cột.”</td></tr>
+<tr><td>“Tư vấn khách hàng.”</td><td>“Bạn là trợ lý giao dịch viên. Hãy soạn bản nháp tư vấn cho khách hàng 25 tuổi muốn gửi tiết kiệm ngắn hạn, ưu tiên thanh khoản. Chỉ nêu thông tin chung, không tự đưa ra cam kết lãi suất nếu dữ liệu chưa có.”</td></tr></table></div>
+<div class='card'><h3>2. Công thức prompt 6 thành phần</h3>
+<table><tr><th>Thành phần</th><th>Câu hỏi cần trả lời</th><th>Ví dụ</th></tr>
+<tr><td><b>Vai trò</b></td><td>AI đang đóng vai ai?</td><td>Chuyên viên kho / chuyên viên phân tích tài chính</td></tr>
+<tr><td><b>Nhiệm vụ</b></td><td>Cần AI làm việc gì?</td><td>Phân tích giao trễ / tóm tắt báo cáo</td></tr>
+<tr><td><b>Dữ liệu</b></td><td>AI dựa trên dữ liệu nào?</td><td>Bảng đơn hàng / số liệu doanh thu, chi phí</td></tr>
+<tr><td><b>Ràng buộc</b></td><td>Điều gì không được làm?</td><td>Không tự suy đoán khi thiếu dữ liệu</td></tr>
+<tr><td><b>Định dạng</b></td><td>Trả lời dưới dạng gì?</td><td>Bảng, checklist, 5 gạch đầu dòng</td></tr>
+<tr><td><b>Tiêu chí kiểm tra</b></td><td>Thế nào là đầu ra đạt yêu cầu?</td><td>Có nguồn, cảnh báo dữ liệu thiếu, hành động cụ thể</td></tr></table>
+<div class='box q'><h4>Mẹo ghi nhớ</h4><p><b>VAI TRÒ → NHIỆM VỤ → DỮ LIỆU → RÀNG BUỘC → ĐỊNH DẠNG → KIỂM TRA</b></p></div></div>
+<div class='card'><h3>3. Ví dụ chuyên ngành</h3><div class='grid2'>
+<div class='box log'><h4>Logistics & QLCCU</h4><p><b>Tình huống:</b> tỷ lệ giao hàng trễ tăng.</p><p>“Bạn là chuyên viên vận hành logistics. Dựa trên dữ liệu đơn hàng gồm mã đơn, tuyến, kho xuất, thời gian dự kiến, thời gian thực tế và nguyên nhân ghi nhận, hãy nhóm nguyên nhân giao trễ, xếp hạng 5 nguyên nhân phổ biến và đề xuất hành động. Nếu thiếu dữ liệu, hãy ghi rõ. Trình bày thành bảng.”</p></div>
+<div class='box fin'><h4>Tài chính – Ngân hàng</h4><p><b>Tình huống:</b> cần tóm tắt hồ sơ khách hàng trước cuộc gọi.</p><p>“Bạn là trợ lý chuyên viên quan hệ khách hàng. Hãy tóm tắt hồ sơ giả lập thành 6 ý: nhu cầu, sản phẩm đang dùng, mức độ tương tác, câu hỏi trước đây, dữ liệu còn thiếu và 3 câu hỏi cần xác minh. Không suy đoán thông tin chưa có.”</p></div></div></div>
+<div class='card'><h3>4. Thực hành nhóm · Prompt 3 vòng</h3>
+<ol><li><b>Vòng 1:</b> viết prompt đầu tiên.</li><li><b>Vòng 2:</b> đọc kết quả, chỉ ra ít nhất 3 điểm chưa đạt.</li><li><b>Vòng 3:</b> sửa prompt, thêm ràng buộc và tiêu chí kiểm tra.</li></ol>
+<table><tr><th>Tiêu chí</th><th>0 điểm</th><th>1 điểm</th><th>2 điểm</th></tr>
+<tr><td>Rõ nhiệm vụ</td><td>Mơ hồ</td><td>Khá rõ</td><td>Cụ thể</td></tr>
+<tr><td>Có dữ liệu/bối cảnh</td><td>Không có</td><td>Một phần</td><td>Đầy đủ</td></tr>
+<tr><td>Có ràng buộc</td><td>Không có</td><td>Chung</td><td>Cụ thể</td></tr>
+<tr><td>Định dạng đầu ra</td><td>Không có</td><td>Có</td><td>Rõ, dễ kiểm tra</td></tr>
+<tr><td>Tiêu chí kiểm tra</td><td>Không có</td><td>1 tiêu chí</td><td>2+ tiêu chí</td></tr></table></div>
+<div class='card'><h3>5. Câu hỏi nhanh tương tác</h3>
+<div class='quiz' data-answer='2'><p><b>Câu 1.</b> Thành phần nào giúp AI biết cách trình bày câu trả lời?</p><button type='button' class='quiz-option' data-i='0'>A. Vai trò</button><button type='button' class='quiz-option' data-i='1'>B. Dữ liệu</button><button type='button' class='quiz-option' data-i='2'>C. Định dạng đầu ra</button><div class='quiz-feedback'></div></div>
+<div class='quiz' data-answer='1'><p><b>Câu 2.</b> Khi dữ liệu thiếu, prompt tốt nên yêu cầu AI làm gì?</p><button type='button' class='quiz-option' data-i='0'>A. Tự đoán</button><button type='button' class='quiz-option' data-i='1'>B. Ghi rõ dữ liệu thiếu hoặc hỏi lại</button><button type='button' class='quiz-option' data-i='2'>C. Bỏ qua</button><div class='quiz-feedback'></div></div>
+<details><summary>Câu hỏi mở</summary><p>Hãy sửa prompt “Phân tích doanh thu giúp tôi” thành một prompt có đủ ít nhất 4 thành phần.</p></details></div>
+<div class='card'><h3>Chốt tiết 2</h3><div class='box teach'><p>“Prompt không phải câu thần chú. Prompt là bản mô tả công việc. Càng hiểu chuyên môn, các em càng đặt yêu cầu cho AI tốt hơn.”</p></div></div>
+<div class='card'><h3>Bài tập nhóm 30 phút · Tiết 2</h3>
+<p><b>Chủ đề:</b> Xây dựng bộ prompt chuyên ngành qua 3 vòng cải tiến.</p>
+<div class='grid2'><div class='box act'><h4>Phân vai nhóm 4–5 sinh viên</h4><ol>
+<li><b>Nhóm trưởng:</b> chọn tình huống và quản lý thời gian.</li>
+<li><b>Người viết prompt:</b> tạo prompt vòng 1 và vòng 2.</li>
+<li><b>Người cung cấp bối cảnh/dữ liệu:</b> bổ sung dữ liệu giả lập.</li>
+<li><b>Người kiểm thử:</b> đánh giá đầu ra theo rubric.</li>
+<li><b>Người trình bày:</b> so sánh trước/sau.</li></ol></div>
+<div class='box q'><h4>Phân bổ 30 phút</h4><ul><li>5 phút: chọn nhiệm vụ.</li><li>6 phút: viết prompt vòng 1.</li><li>6 phút: đánh giá đầu ra.</li><li>7 phút: sửa prompt vòng 2–3.</li><li>4 phút: chấm rubric.</li><li>2 phút: chuẩn bị báo cáo.</li></ul></div></div>
+<p><b>Gợi ý Logistics:</b> phân tích giao trễ, so sánh nhà cung cấp, tóm tắt tồn kho.</p>
+<p><b>Gợi ý Tài chính – Ngân hàng:</b> tóm tắt hồ sơ, so sánh sản phẩm, phân loại phản hồi.</p>
+<p><b>Sản phẩm:</b> Prompt vòng 1, prompt cuối, bảng 3 điểm cải tiến và điểm rubric.</p></div><div class='card gift-qa'><h3>10 câu hỏi ôn tập · Tiết 2</h3><p>Bấm vào từng <b>hộp quà 🎁</b> để mở hoặc ẩn đáp án.</p><div class='gift-item'><div class='gift-question'>Câu 1. Prompt là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Prompt là yêu cầu hoặc chỉ dẫn mà người dùng cung cấp cho AI để tạo ra đầu ra mong muốn.</div></div><div class='gift-item'><div class='gift-question'>Câu 2. Sáu thành phần của prompt tốt gồm những gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Vai trò, nhiệm vụ, dữ liệu, ràng buộc, định dạng và tiêu chí kiểm tra.</div></div><div class='gift-item'><div class='gift-question'>Câu 3. Vì sao phải nêu vai trò trong prompt?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Để định hướng góc nhìn và cách AI xử lý nhiệm vụ phù hợp bối cảnh.</div></div><div class='gift-item'><div class='gift-question'>Câu 4. Nếu dữ liệu chưa đủ, prompt nên yêu cầu AI làm gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Ghi rõ dữ liệu còn thiếu hoặc đặt câu hỏi lại, không tự suy đoán.</div></div><div class='gift-item'><div class='gift-question'>Câu 5. Định dạng đầu ra giúp ích gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Giúp kết quả dễ đọc, dễ dùng và dễ kiểm tra.</div></div><div class='gift-item'><div class='gift-question'>Câu 6. Một ràng buộc tốt trong prompt ngân hàng là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Không tự đưa ra cam kết lãi suất hoặc kết luận tín dụng khi chưa có dữ liệu chính thức.</div></div><div class='gift-item'><div class='gift-question'>Câu 7. Một ràng buộc tốt trong prompt Logistics là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Không suy đoán nguyên nhân giao trễ khi chưa có dữ liệu tuyến, kho hoặc thời gian.</div></div><div class='gift-item'><div class='gift-question'>Câu 8. Vì sao nên thử prompt qua nhiều vòng?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Để phát hiện điểm chưa rõ và cải tiến đầu ra từng bước.</div></div><div class='gift-item'><div class='gift-question'>Câu 9. Prompt dài có phải luôn tốt hơn không?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Không. Prompt cần rõ và đủ thông tin, không nhất thiết phải dài.</div></div><div class='gift-item'><div class='gift-question'>Câu 10. Kiến thức chuyên ngành ảnh hưởng prompt như thế nào?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Càng hiểu nghiệp vụ, người dùng càng đặt câu hỏi chính xác và kiểm tra đầu ra tốt hơn.</div></div></div></div><div class='period'>
+<div class='card'><h3>Tiết 3 · AI hỗ trợ phân tích dữ liệu và ra quyết định</h3>
+<p><b>Mục tiêu:</b> Sinh viên biết đặt câu hỏi phân tích dữ liệu, phân biệt mô tả – chẩn đoán – dự đoán – đề xuất và hiểu giới hạn của AI khi hỗ trợ quyết định.</p>
+<div class='timeline'><div class='time'>0–7 phút</div><div>Khởi động bằng một bảng số liệu đơn giản.</div></div><div class='timeline'><div class='time'>7–18 phút</div><div>4 tầng phân tích dữ liệu.</div></div><div class='timeline'><div class='time'>18–30 phút</div><div>Case Logistics và Tài chính – Ngân hàng.</div></div><div class='timeline'><div class='time'>30–40 phút</div><div>Hoạt động nhóm: phân tích tình huống.</div></div><div class='timeline'><div class='time'>40–45 phút</div><div>Phản biện kết luận AI và củng cố.</div></div></div>
+<div class='card'><h3>1. Bốn tầng câu hỏi dữ liệu</h3><table><tr><th>Tầng</th><th>Câu hỏi</th><th>Ví dụ</th></tr><tr><td><b>Mô tả</b></td><td>Điều gì đã xảy ra?</td><td>Tỷ lệ giao trễ tăng bao nhiêu?</td></tr><tr><td><b>Chẩn đoán</b></td><td>Vì sao xảy ra?</td><td>Tuyến nào, kho nào liên quan?</td></tr><tr><td><b>Dự đoán</b></td><td>Điều gì có thể xảy ra tiếp?</td><td>Tuần tới nhóm đơn nào có rủi ro trễ?</td></tr><tr><td><b>Đề xuất</b></td><td>Nên làm gì?</td><td>Cần ưu tiên giải pháp nào?</td></tr></table><div class='box teach'><h4>Lời giảng</h4><p>“Đừng nhảy thẳng từ dữ liệu sang quyết định. Hãy đi theo chuỗi: mô tả → tìm nguyên nhân → kiểm tra giả thuyết → dự đoán → đề xuất.”</p></div></div>
+<div class='card'><h3>2. Case Logistics · Giao hàng trễ tăng</h3><p><b>Bối cảnh:</b> 4 tuần gần đây, tỷ lệ đơn giao trễ tăng từ 7% lên 12%.</p><p><b>Dữ liệu nên yêu cầu:</b></p><ul><li>Tuyến vận chuyển.</li><li>Kho xuất hàng.</li><li>Loại hàng.</li><li>Thời gian bốc dỡ.</li><li>Tài xế/đơn vị vận chuyển.</li><li>Thời tiết hoặc sự cố.</li><li>SLA cam kết.</li></ul><div class='box log'><h4>Nhiệm vụ nhóm</h4><ol><li>Viết 3 câu hỏi mô tả.</li><li>Viết 3 giả thuyết nguyên nhân.</li><li>Chỉ ra dữ liệu cần thêm.</li><li>Đề xuất 2 hành động ngắn hạn và 2 hành động dài hạn.</li></ol></div></div>
+<div class='card'><h3>3. Case Tài chính – Ngân hàng · Khách hàng giảm sử dụng sản phẩm</h3><p><b>Bối cảnh:</b> tỷ lệ khách hàng tiếp tục sử dụng một sản phẩm sau 6 tháng giảm.</p><ul><li>Kênh giao dịch.</li><li>Tần suất sử dụng.</li><li>Nhóm tuổi.</li><li>Thời gian phản hồi khiếu nại.</li><li>Lịch sử tương tác.</li><li>Thông tin sản phẩm.</li><li>Khảo sát hài lòng.</li></ul><div class='box fin'><h4>Nhiệm vụ nhóm</h4><ol><li>Xác định 5 chỉ số nên theo dõi.</li><li>Đặt 3 câu hỏi để tìm nguyên nhân.</li><li>Nêu 2 rủi ro nếu AI suy luận từ dữ liệu thiếu.</li><li>Đề xuất cách kiểm chứng kết luận.</li></ol></div></div>
+<div class='card'><h3>4. Ma trận “Kết luận AI có đáng tin không?”</h3><table><tr><th>Câu hỏi kiểm tra</th><th>Nếu Có</th><th>Nếu Không</th></tr><tr><td>Dữ liệu có rõ nguồn?</td><td>Tiếp tục</td><td>Bổ sung nguồn</td></tr><tr><td>Số liệu có đủ?</td><td>Tiếp tục</td><td>Không kết luận mạnh</td></tr><tr><td>Có thể đối chiếu?</td><td>Đối chiếu</td><td>Đánh dấu rủi ro</td></tr><tr><td>AI có nêu giả định?</td><td>Kiểm tra giả định</td><td>Yêu cầu nêu giả định</td></tr><tr><td>Quyết định có rủi ro cao?</td><td>Con người phê duyệt</td><td>Vẫn cần kiểm tra</td></tr></table></div>
+<div class='card'><h3>5. Hoạt động nhóm · Bắt lỗi kết luận AI</h3><ol><li>“Tuyến A giao trễ vì tài xế làm việc kém.”</li><li>“Nhóm khách hàng 18–25 tuổi không thích sản phẩm này.”</li><li>“Doanh thu giảm vì chiến dịch marketing không hiệu quả.”</li></ol><p>Với mỗi kết luận: dữ liệu nào còn thiếu? giả thuyết khác là gì? cần kiểm tra thêm bằng cách nào?</p></div>
+<div class='card'><h3>6. Câu hỏi củng cố</h3><div class='quiz' data-answer='0'><p><b>Câu 1.</b> “Điều gì đã xảy ra?” thuộc tầng nào?</p><button type='button' class='quiz-option' data-i='0'>A. Mô tả</button><button type='button' class='quiz-option' data-i='1'>B. Dự đoán</button><button type='button' class='quiz-option' data-i='2'>C. Đề xuất</button><div class='quiz-feedback'></div></div><div class='quiz' data-answer='2'><p><b>Câu 2.</b> AI nêu nguyên nhân nhưng không có dữ liệu chứng minh, nên làm gì?</p><button type='button' class='quiz-option' data-i='0'>A. Tin luôn</button><button type='button' class='quiz-option' data-i='1'>B. Chia sẻ ngay</button><button type='button' class='quiz-option' data-i='2'>C. Xem là giả thuyết và kiểm chứng</button><div class='quiz-feedback'></div></div></div>
+<div class='card'><h3>Chốt tiết 3</h3><div class='box teach'><p>“AI có thể giúp nhìn dữ liệu nhanh hơn, nhưng kết luận tốt vẫn cần dữ liệu đủ, câu hỏi đúng và con người biết phản biện.”</p></div></div>
+<div class='card'><h3>Bài tập nhóm 30 phút · Tiết 3</h3>
+<p><b>Chủ đề:</b> Phân tích dữ liệu và kiểm chứng kết luận AI.</p>
+<div class='grid2'><div class='box act'><h4>Phân vai nhóm 4–5 sinh viên</h4><ol>
+<li><b>Nhóm trưởng:</b> điều phối quy trình phân tích.</li>
+<li><b>Người đọc dữ liệu:</b> xác định số liệu và xu hướng chính.</li>
+<li><b>Người đặt giả thuyết:</b> đề xuất các nguyên nhân khả dĩ.</li>
+<li><b>Người phản biện:</b> tìm dữ liệu thiếu và rủi ro suy luận.</li>
+<li><b>Người trình bày:</b> trình bày kết luận có điều kiện.</li></ol></div>
+<div class='box q'><h4>Phân bổ 30 phút</h4><ul><li>5 phút: đọc tình huống.</li><li>7 phút: mô tả hiện trạng.</li><li>7 phút: đề xuất 3 giả thuyết.</li><li>6 phút: xác định dữ liệu cần kiểm chứng.</li><li>3 phút: chốt khuyến nghị.</li><li>2 phút: chuẩn bị trình bày.</li></ul></div></div>
+<p><b>Sản phẩm:</b> Bảng: Hiện tượng – Giả thuyết – Dữ liệu cần kiểm tra – Khuyến nghị.</p>
+<p><b>Yêu cầu:</b> không kết luận chắc chắn khi dữ liệu chưa đủ.</p></div><div class='card gift-qa'><h3>10 câu hỏi ôn tập · Tiết 3</h3><p>Bấm vào từng <b>hộp quà 🎁</b> để mở hoặc ẩn đáp án.</p><div class='gift-item'><div class='gift-question'>Câu 1. Bốn tầng phân tích dữ liệu là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Mô tả, chẩn đoán, dự đoán và đề xuất.</div></div><div class='gift-item'><div class='gift-question'>Câu 2. Câu hỏi “Điều gì đã xảy ra?” thuộc tầng nào?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Tầng mô tả.</div></div><div class='gift-item'><div class='gift-question'>Câu 3. Câu hỏi “Vì sao xảy ra?” thuộc tầng nào?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Tầng chẩn đoán.</div></div><div class='gift-item'><div class='gift-question'>Câu 4. Câu hỏi “Điều gì có thể xảy ra tiếp?” thuộc tầng nào?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Tầng dự đoán.</div></div><div class='gift-item'><div class='gift-question'>Câu 5. Câu hỏi “Nên làm gì?” thuộc tầng nào?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Tầng đề xuất.</div></div><div class='gift-item'><div class='gift-question'>Câu 6. Vì sao không nên nhảy thẳng từ dữ liệu sang quyết định?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Vì có thể bỏ qua nguyên nhân, dữ liệu thiếu và các giả thuyết thay thế.</div></div><div class='gift-item'><div class='gift-question'>Câu 7. Kết luận AI không có nguồn dữ liệu nên được xem là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Một giả thuyết cần kiểm chứng, không phải kết luận chắc chắn.</div></div><div class='gift-item'><div class='gift-question'>Câu 8. Trong Logistics, dữ liệu nào giúp phân tích giao trễ?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Tuyến, kho, loại hàng, thời gian bốc dỡ, tài xế, sự cố và SLA.</div></div><div class='gift-item'><div class='gift-question'>Câu 9. Trong ngân hàng, dữ liệu nào giúp phân tích mức độ sử dụng sản phẩm?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Kênh giao dịch, tần suất, lịch sử tương tác, phản hồi và thông tin sản phẩm.</div></div><div class='gift-item'><div class='gift-question'>Câu 10. Ai chịu trách nhiệm với quyết định cuối cùng?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Con người hoặc đơn vị có thẩm quyền, không phải AI.</div></div></div></div><div class='period'>
+<div class='card'><h3>Tiết 4 · Tạo trợ lý AI cá nhân cho công việc chuyên ngành</h3><p><b>Mục tiêu:</b> Sinh viên thiết kế được một trợ lý AI theo vai trò cụ thể, xác định rõ người dùng, đầu vào, nhiệm vụ, giới hạn, đầu ra và cơ chế kiểm tra.</p><div class='timeline'><div class='time'>0–8 phút</div><div>Khởi động: trợ lý AI khác chatbot hỏi đáp thông thường thế nào?</div></div><div class='timeline'><div class='time'>8–18 phút</div><div>7 thành phần của một AI Assistant Card.</div></div><div class='timeline'><div class='time'>18–28 phút</div><div>Ví dụ trợ lý theo 2 ngành.</div></div><div class='timeline'><div class='time'>28–40 phút</div><div>Thiết kế trợ lý theo nhóm.</div></div><div class='timeline'><div class='time'>40–45 phút</div><div>Pitch 90 giây và phản hồi.</div></div></div>
+<div class='card'><h3>1. Trợ lý AI chuyên ngành là gì?</h3><p>Một trợ lý AI tốt không “làm mọi thứ”. Nó được thiết kế cho <b>một nhóm nhiệm vụ rõ ràng</b>, với dữ liệu đầu vào, quy tắc và đầu ra cụ thể.</p><div class='box q'><h4>Phân biệt</h4><p><b>Chatbot chung:</b> hỏi gì trả lời nấy. <br><b>Trợ lý chuyên ngành:</b> có vai trò, nhiệm vụ, quy trình và giới hạn xác định trước.</p></div></div>
+<div class='card'><h3>2. AI Assistant Card · 7 thành phần</h3><table><tr><th>Thành phần</th><th>Câu hỏi thiết kế</th></tr><tr><td>Tên trợ lý</td><td>Trợ lý này được gọi là gì?</td></tr><tr><td>Người dùng</td><td>Ai sẽ dùng?</td></tr><tr><td>Đầu vào</td><td>Cần dữ liệu gì?</td></tr><tr><td>3 nhiệm vụ chính</td><td>Trợ lý giúp những việc nào?</td></tr><tr><td>Giới hạn</td><td>Điều gì không được làm?</td></tr><tr><td>Chuẩn đầu ra</td><td>Kết quả phải có cấu trúc ra sao?</td></tr><tr><td>Kiểm tra</td><td>Ai và bằng cách nào xác nhận kết quả?</td></tr></table></div>
+<div class='card'><h3>3. Ví dụ trợ lý ngành Logistics & QLCCU</h3><div class='box log'><h4>Trợ lý Điều phối Kho</h4><ul><li><b>Người dùng:</b> nhân viên kho/điều phối.</li><li><b>Đầu vào:</b> tồn kho, đơn xuất, lịch nhập, tình trạng SKU.</li><li><b>Nhiệm vụ:</b> tóm tắt tồn kho bất thường; cảnh báo SKU chậm luân chuyển; tạo checklist đầu ca.</li><li><b>Không được:</b> tự quyết định hủy đơn hoặc thay đổi tồn kho hệ thống.</li><li><b>Đầu ra:</b> bảng ưu tiên + cảnh báo + hành động đề xuất.</li><li><b>Kiểm tra:</b> nhân viên kho đối chiếu dữ liệu hệ thống.</li></ul></div></div>
+<div class='card'><h3>4. Ví dụ trợ lý ngành Tài chính – Ngân hàng</h3><div class='box fin'><h4>Trợ lý Hỗ trợ Giao dịch viên</h4><ul><li><b>Người dùng:</b> giao dịch viên/chuyên viên chăm sóc khách hàng.</li><li><b>Đầu vào:</b> câu hỏi khách hàng và thông tin sản phẩm được phép sử dụng.</li><li><b>Nhiệm vụ:</b> chuẩn hóa ghi chú; tóm tắt nhu cầu; tạo checklist hồ sơ.</li><li><b>Không được:</b> tự quyết định tín dụng hoặc tạo cam kết ngoài chính sách.</li><li><b>Đầu ra:</b> tóm tắt 6 ý + checklist.</li><li><b>Kiểm tra:</b> chuyên viên xác nhận trước khi sử dụng.</li></ul></div></div>
+<div class='card'><h3>5. Hoạt động nhóm · Thiết kế trợ lý AI</h3><table><tr><th>Mục</th><th>Nội dung nhóm điền</th></tr><tr><td>Tên trợ lý</td><td></td></tr><tr><td>Người dùng</td><td></td></tr><tr><td>Đầu vào</td><td></td></tr><tr><td>3 nhiệm vụ</td><td></td></tr><tr><td>3 điều không được làm</td><td></td></tr><tr><td>Định dạng đầu ra</td><td></td></tr><tr><td>Cách kiểm tra</td><td></td></tr></table><div class='box act'><h4>Yêu cầu sản phẩm</h4><p>Nhóm tạo 1 trang A4 hoặc 1 slide. Đại diện nhóm trình bày <b>90 giây</b>.</p></div></div>
+<div class='card'><h3>6. Bộ câu hỏi phản biện</h3><ol><li>Nếu đầu vào thiếu dữ liệu, trợ lý phản ứng thế nào?</li><li>Nếu kết quả sai, ai chịu trách nhiệm kiểm tra?</li><li>Có dữ liệu nào không nên đưa vào công cụ AI công cộng?</li><li>Trợ lý này có thực sự tiết kiệm thời gian không?</li><li>Đầu ra có thể đo bằng tiêu chí nào?</li></ol></div>
+<div class='card'><h3>7. Củng cố</h3><div class='quiz' data-answer='1'><p><b>Câu 1.</b> Trợ lý AI chuyên ngành nên có phạm vi như thế nào?</p><button type='button' class='quiz-option' data-i='0'>A. Làm mọi việc</button><button type='button' class='quiz-option' data-i='1'>B. Có nhiệm vụ và giới hạn rõ</button><button type='button' class='quiz-option' data-i='2'>C. Không cần người kiểm tra</button><div class='quiz-feedback'></div></div><div class='quiz' data-answer='2'><p><b>Câu 2.</b> Thành phần nào giúp giảm rủi ro?</p><button type='button' class='quiz-option' data-i='0'>A. Tên trợ lý</button><button type='button' class='quiz-option' data-i='1'>B. Màu giao diện</button><button type='button' class='quiz-option' data-i='2'>C. Giới hạn và cách kiểm tra</button><div class='quiz-feedback'></div></div></div>
+<div class='card'><h3>Chốt tiết 4</h3><div class='box teach'><p>“Một trợ lý AI tốt không phải trợ lý biết nhiều nhất, mà là trợ lý biết rõ mình được làm gì, không được làm gì và ai sẽ kiểm tra kết quả.”</p></div></div>
+<div class='card'><h3>Bài tập nhóm 30 phút · Tiết 4</h3>
+<p><b>Chủ đề:</b> Thiết kế trợ lý AI chuyên ngành.</p>
+<div class='grid2'><div class='box act'><h4>Phân vai nhóm 4–5 sinh viên</h4><ol>
+<li><b>Nhóm trưởng/Product Owner:</b> xác định người dùng và mục tiêu.</li>
+<li><b>Người thiết kế nghiệp vụ:</b> xác định đầu vào và quy trình.</li>
+<li><b>Người thiết kế prompt:</b> viết hướng dẫn cho trợ lý AI.</li>
+<li><b>Người kiểm soát rủi ro:</b> xây giới hạn và cảnh báo.</li>
+<li><b>Người demo:</b> trình bày AI Assistant Card.</li></ol></div>
+<div class='box q'><h4>Phân bổ 30 phút</h4><ul><li>5 phút: chọn vai trò người dùng.</li><li>7 phút: xác định 3 nhiệm vụ chính.</li><li>6 phút: xác định đầu vào/đầu ra.</li><li>6 phút: xây 3 giới hạn và cơ chế kiểm tra.</li><li>4 phút: hoàn thiện Assistant Card.</li><li>2 phút: chuẩn bị pitch.</li></ul></div></div>
+<p><b>Sản phẩm:</b> 1 AI Assistant Card gồm 7 thành phần và 1 prompt hệ thống ngắn.</p>
+<p><b>Tiêu chí:</b> hữu ích 3đ; đúng ngành 2đ; giới hạn rõ 2đ; kiểm soát dữ liệu 2đ; trình bày 1đ.</p></div><div class='card gift-qa'><h3>10 câu hỏi ôn tập · Tiết 4</h3><p>Bấm vào từng <b>hộp quà 🎁</b> để mở hoặc ẩn đáp án.</p><div class='gift-item'><div class='gift-question'>Câu 1. Trợ lý AI chuyên ngành khác chatbot chung ở điểm nào?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Trợ lý chuyên ngành có vai trò, nhiệm vụ, dữ liệu đầu vào, giới hạn và đầu ra xác định.</div></div><div class='gift-item'><div class='gift-question'>Câu 2. Bảy thành phần của AI Assistant Card là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Tên trợ lý, người dùng, đầu vào, nhiệm vụ, giới hạn, chuẩn đầu ra và cách kiểm tra.</div></div><div class='gift-item'><div class='gift-question'>Câu 3. Vì sao phải xác định người dùng của trợ lý AI?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Để thiết kế nhiệm vụ và đầu ra đúng nhu cầu thực tế.</div></div><div class='gift-item'><div class='gift-question'>Câu 4. Đầu vào của trợ lý điều phối kho có thể là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Tồn kho, đơn xuất, lịch nhập và trạng thái SKU.</div></div><div class='gift-item'><div class='gift-question'>Câu 5. Trợ lý giao dịch viên không được làm gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Không tự quyết định tín dụng hoặc tạo cam kết ngoài chính sách.</div></div><div class='gift-item'><div class='gift-question'>Câu 6. Giới hạn của trợ lý AI có tác dụng gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Giảm rủi ro và ngăn AI vượt quá phạm vi được phép.</div></div><div class='gift-item'><div class='gift-question'>Câu 7. Chuẩn đầu ra là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Là cấu trúc kết quả mong muốn như bảng, checklist hoặc tóm tắt theo mục.</div></div><div class='gift-item'><div class='gift-question'>Câu 8. Ai nên kiểm tra đầu ra trợ lý AI?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Người dùng chuyên môn hoặc người có trách nhiệm trong quy trình.</div></div><div class='gift-item'><div class='gift-question'>Câu 9. Một trợ lý AI tốt có cần làm mọi thứ không?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Không. Nó nên tập trung vào một nhóm nhiệm vụ rõ ràng.</div></div><div class='gift-item'><div class='gift-question'>Câu 10. Tiêu chí quan trọng khi đánh giá trợ lý AI là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Hữu ích, đúng ngành, có giới hạn, bảo vệ dữ liệu và dễ kiểm tra.</div></div></div></div><div class='period'>
+<div class='card'><h3>Tiết 5 · Thử thách cuối buổi: AI có ích thật không?</h3><p><b>Mục tiêu:</b> Sinh viên tổng hợp kiến thức của cả Buổi 5 bằng cách chọn một công việc thật, thử nghiệm AI qua nhiều vòng, đo chất lượng đầu ra và trình bày kết quả.</p><div class='timeline'><div class='time'>0–5 phút</div><div>Nhắc lại 4 nội dung chính của Buổi 5.</div></div><div class='timeline'><div class='time'>5–12 phút</div><div>Chọn nhiệm vụ và xác định tiêu chí thành công.</div></div><div class='timeline'><div class='time'>12–30 phút</div><div>Thử nghiệm 3 vòng prompt.</div></div><div class='timeline'><div class='time'>30–40 phút</div><div>Đánh giá hiệu quả và chuẩn bị báo cáo.</div></div><div class='timeline'><div class='time'>40–45 phút</div><div>Pitch nhanh + tổng kết.</div></div></div>
+<div class='card'><h3>1. Ôn nhanh toàn Buổi 5</h3><ol><li>Nhận diện đúng bài toán AI.</li><li>Viết prompt có cấu trúc.</li><li>Phân tích dữ liệu có kiểm chứng.</li><li>Thiết kế trợ lý AI có giới hạn.</li></ol><div class='box teach'><h4>Lời dẫn</h4><p>“Bây giờ chúng ta không học thêm khái niệm mới. Ta sẽ kiểm tra xem AI có thực sự giúp công việc nhanh hơn, rõ hơn và tốt hơn hay không.”</p></div></div>
+<div class='card'><h3>2. Chọn một nhiệm vụ thật</h3><div class='grid2'><div class='box log'><h4>Logistics & QLCCU</h4><ul><li>Phân tích nguyên nhân giao trễ.</li><li>So sánh 3 nhà cung cấp.</li><li>Tóm tắt báo cáo tồn kho.</li><li>Soạn email xử lý sự cố.</li><li>Thiết kế checklist giao nhận.</li></ul></div><div class='box fin'><h4>Tài chính – Ngân hàng</h4><ul><li>Tóm tắt hồ sơ giả lập.</li><li>So sánh 3 sản phẩm.</li><li>Phân loại phản hồi khách hàng.</li><li>Soạn nội dung tư vấn.</li><li>Tạo checklist hồ sơ cần bổ sung.</li></ul></div></div></div>
+<div class='card'><h3>3. Xác định tiêu chí thành công trước khi dùng AI</h3><ul><li>Đúng yêu cầu.</li><li>Đúng chuyên ngành.</li><li>Không tự bịa dữ liệu.</li><li>Có thể kiểm chứng.</li><li>Tiết kiệm thời gian.</li><li>Trình bày dễ hiểu.</li><li>Có cảnh báo khi thiếu dữ liệu.</li></ul></div>
+<div class='card'><h3>4. Thử nghiệm 3 vòng</h3><table><tr><th>Vòng</th><th>Việc cần làm</th><th>Nhóm ghi nhận</th></tr><tr><td>1</td><td>Chạy prompt ban đầu</td><td>3 điểm chưa đạt</td></tr><tr><td>2</td><td>Sửa prompt và thêm ràng buộc</td><td>Kết quả thay đổi thế nào?</td></tr><tr><td>3</td><td>Thêm tiêu chí kiểm tra và định dạng</td><td>Đầu ra cuối có đạt không?</td></tr></table><div class='box act'><h4>Nguyên tắc</h4><p>Không chỉ chụp kết quả. Nhóm phải giải thích <b>vì sao prompt sau tốt hơn prompt trước</b>.</p></div></div>
+<div class='card'><h3>5. Bảng chấm hiệu quả AI</h3><table><tr><th>Tiêu chí</th><th>0 điểm</th><th>1 điểm</th><th>2 điểm</th></tr><tr><td>Đúng yêu cầu</td><td>Sai</td><td>Đúng một phần</td><td>Đúng rõ</td></tr><tr><td>Đúng chuyên ngành</td><td>Chung chung</td><td>Có liên quan</td><td>Phù hợp thực tế</td></tr><tr><td>Có thể kiểm chứng</td><td>Không</td><td>Một phần</td><td>Rõ nguồn/giả định</td></tr><tr><td>Tiết kiệm thời gian</td><td>Không</td><td>Ít</td><td>Rõ rệt</td></tr><tr><td>Trình bày</td><td>Khó dùng</td><td>Tạm được</td><td>Dễ dùng ngay</td></tr></table><p><b>Tổng tối đa: 10 điểm.</b></p></div>
+<div class='card'><h3>6. Báo cáo 3 phút</h3><ol><li>Nhiệm vụ nhóm chọn.</li><li>Prompt ban đầu.</li><li>Điểm yếu phát hiện.</li><li>Prompt cuối.</li><li>Điểm số trước và sau.</li><li>Một bài học quan trọng.</li></ol></div>
+<div class='card'><h3>7. Câu hỏi tổng kết Buổi 5</h3><div class='quiz' data-answer='1'><p><b>Câu 1.</b> Khi AI trả lời tốt hơn sau khi sửa prompt, điều đó cho thấy điều gì?</p><button type='button' class='quiz-option' data-i='0'>A. AI luôn đúng</button><button type='button' class='quiz-option' data-i='1'>B. Chất lượng đầu vào và yêu cầu ảnh hưởng mạnh đến đầu ra</button><button type='button' class='quiz-option' data-i='2'>C. Không cần kiến thức chuyên ngành</button><div class='quiz-feedback'></div></div><div class='quiz' data-answer='2'><p><b>Câu 2.</b> Ai chịu trách nhiệm với quyết định cuối cùng trong công việc chuyên môn?</p><button type='button' class='quiz-option' data-i='0'>A. AI</button><button type='button' class='quiz-option' data-i='1'>B. Công cụ phần mềm</button><button type='button' class='quiz-option' data-i='2'>C. Con người/đơn vị có thẩm quyền</button><div class='quiz-feedback'></div></div><details><summary>3 câu hỏi mở</summary><ol><li>AI giúp tiết kiệm thời gian rõ nhất ở bước nào?</li><li>Điểm nào AI vẫn dễ sai?</li><li>Nếu áp dụng thật ở doanh nghiệp, cần bổ sung quy định gì?</li></ol></details></div>
+<div class='card'><h3>8. Bài tập sau Buổi 5</h3><p>Mỗi nhóm lưu lại một <b>Hồ sơ ứng dụng AI chuyên ngành</b> gồm:</p><ul><li>01 nhiệm vụ thực tế.</li><li>01 prompt phiên bản đầu.</li><li>01 prompt phiên bản cuối.</li><li>01 bảng đánh giá 10 điểm.</li><li>01 đoạn 150–200 chữ nêu bài học rút ra.</li></ul><p>Hồ sơ này sẽ được dùng làm đầu vào cho <b>Buổi 6 – Thiết kế Workflow AI chuyên ngành</b>.</p></div>
+<div class='card'><h3>Thông điệp kết Buổi 5</h3><div class='box teach'><p>“Dùng AI hiệu quả không bắt đầu từ công cụ, mà bắt đầu từ việc hiểu công việc. Khi xác định đúng vấn đề, đặt đúng yêu cầu, kiểm tra đúng dữ liệu và giữ con người trong vòng kiểm soát, AI mới thực sự tạo ra giá trị.”</p></div></div>
+<div class='card'><h3>Bài tập nhóm 30 phút · Tiết 5</h3>
+<p><b>Chủ đề:</b> Mini Challenge – Chứng minh AI tạo ra giá trị.</p>
+<div class='grid2'><div class='box act'><h4>Phân vai nhóm 4–5 sinh viên</h4><ol>
+<li><b>Nhóm trưởng:</b> chọn nhiệm vụ và điều phối.</li>
+<li><b>Người thao tác AI:</b> chạy prompt 3 vòng.</li>
+<li><b>Người ghi nhận:</b> lưu kết quả trước/sau.</li>
+<li><b>Người đánh giá:</b> chấm theo thang 10 điểm.</li>
+<li><b>Người thuyết trình:</b> chuẩn bị pitch 3 phút.</li></ol></div>
+<div class='box q'><h4>Phân bổ 30 phút</h4><ul><li>4 phút: chọn nhiệm vụ.</li><li>8 phút: chạy vòng 1.</li><li>7 phút: cải tiến vòng 2.</li><li>5 phút: vòng 3 và chấm điểm.</li><li>4 phút: chuẩn bị bảng kết quả.</li><li>2 phút: rehearsal nhanh.</li></ul></div></div>
+<p><b>Sản phẩm:</b> hồ sơ mini gồm nhiệm vụ, prompt đầu, prompt cuối, kết quả trước/sau, điểm hiệu quả và 1 kết luận.</p>
+<p><b>Yêu cầu:</b> chỉ ra ít nhất 1 điểm AI làm tốt, 1 điểm AI còn yếu và 1 điểm bắt buộc con người kiểm soát.</p></div><div class='card gift-qa'><h3>10 câu hỏi ôn tập · Tiết 5</h3><p>Bấm vào từng <b>hộp quà 🎁</b> để mở hoặc ẩn đáp án.</p><div class='gift-item'><div class='gift-question'>Câu 1. Mục tiêu của thử thách cuối Buổi 5 là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Kiểm tra xem AI có thực sự tạo ra giá trị trong một nhiệm vụ chuyên ngành cụ thể hay không.</div></div><div class='gift-item'><div class='gift-question'>Câu 2. Vì sao phải xác định tiêu chí thành công trước khi dùng AI?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Để có cơ sở khách quan đánh giá chất lượng đầu ra.</div></div><div class='gift-item'><div class='gift-question'>Câu 3. Ba vòng thử nghiệm prompt gồm những gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Chạy prompt ban đầu, cải tiến prompt, rồi thêm tiêu chí kiểm tra và định dạng.</div></div><div class='gift-item'><div class='gift-question'>Câu 4. Một tiêu chí đánh giá hiệu quả AI là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Đúng yêu cầu.</div></div><div class='gift-item'><div class='gift-question'>Câu 5. Một tiêu chí khác là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Có thể kiểm chứng.</div></div><div class='gift-item'><div class='gift-question'>Câu 6. Tại sao phải so sánh prompt đầu và prompt cuối?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Để thấy rõ quá trình cải tiến và mức độ tác động của prompt tới kết quả.</div></div><div class='gift-item'><div class='gift-question'>Câu 7. AI tạo ra kết quả đẹp nhưng không kiểm chứng được có đạt không?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Không. Kết quả phải có thể kiểm tra và phù hợp dữ liệu.</div></div><div class='gift-item'><div class='gift-question'>Câu 8. Một bài học quan trọng sau thử thách là gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: AI chỉ tạo giá trị khi bài toán, dữ liệu và tiêu chí được xác định rõ.</div></div><div class='gift-item'><div class='gift-question'>Câu 9. Sản phẩm cuối tiết cần có những gì?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Nhiệm vụ, prompt đầu, prompt cuối, kết quả trước/sau, điểm hiệu quả và kết luận.</div></div><div class='gift-item'><div class='gift-question'>Câu 10. Nội dung Buổi 5 kết nối sang Buổi 6 như thế nào?</div><button type='button' class='gift-btn'>🎁 Mở hộp quà để xem đáp án</button><div class='gift-answer'>Đáp án: Kết quả Buổi 5 sẽ làm đầu vào để thiết kế Workflow AI chuyên ngành ở Buổi 6.</div></div></div></div></section>
+<section id='s6' class='session'><div class='hero'><h2>BUỔI 6 · THIẾT KẾ WORKFLOW AI CHUYÊN NGÀNH</h2><p><b>Mục tiêu:</b> Biến công việc thành chuỗi bước, xác định AI ở đâu và con người phê duyệt ở đâu.</p><div class='badges'><span class='badge'>Tư duy quy trình</span><span class='badge'>Human-in-the-loop</span><span class='badge'>Thực hành sơ đồ</span></div></div><div class='tabs'></div>
+<div class='period'><div class='card'><h3>Tiết 1 · Workflow là gì?</h3><p>Mô hình: <b>Trigger → Input → Xử lý → AI hỗ trợ → Kiểm tra → Quyết định → Output → Lưu vết</b>.</p><div class='grid2'><div class='box log'><h4>Logistics</h4><p>Nhận đơn → kiểm tra tồn → xác nhận kho → lập lịch giao → theo dõi → ngoại lệ.</p></div><div class='box fin'><h4>Tài chính</h4><p>Nhận yêu cầu → xác thực → kiểm hồ sơ → phân tích → tư vấn/phê duyệt → lưu biên bản.</p></div></div><div class='box act'><h4>Bài tập</h4><p>Vẽ quy trình quen thuộc ≥7 bước; hình chữ nhật = tác vụ, hình thoi = quyết định.</p></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 2 · Chèn AI đúng điểm</h3><p>4 vị trí: <b>đọc dữ liệu, phân loại, tạo bản nháp, gợi ý phương án</b>. Không giao hoàn toàn các bước pháp lý, phê duyệt tài chính hoặc xác thực danh tính.</p><table><tr><th>Bước</th><th>AI</th><th>Con người</th></tr><tr><td>Nhận dữ liệu</td><td>Chuẩn hóa/tóm tắt</td><td>Kiểm tra nguồn</td></tr><tr><td>Phân tích</td><td>Tìm mẫu/nhóm nguyên nhân</td><td>Đánh giá logic</td></tr><tr><td>Quyết định</td><td>Gợi ý</td><td>Chịu trách nhiệm cuối</td></tr></table></div></div>
+<div class='period'><div class='card'><h3>Tiết 3 · Workflow Logistics & QLCCU</h3><p><b>Case:</b> xử lý giao hàng trễ.</p><ol><li>Nhận cảnh báo SLA.</li><li>Thu thập trạng thái.</li><li>AI tóm tắt nguyên nhân.</li><li>Đối chiếu GPS/kho/tuyến.</li><li>Người phụ trách chọn phương án.</li><li>AI soạn thông báo.</li><li>Quản lý duyệt.</li><li>Lưu bài học.</li></ol><div class='box act'><h4>Nhóm chọn 1 chủ đề</h4><p>Nhập kho, quản lý tồn, lựa chọn nhà cung cấp, xử lý đơn hủy, giao hàng cuối chặng.</p></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 4 · Workflow Tài chính – Ngân hàng</h3><p><b>Case:</b> chuẩn bị tư vấn sản phẩm tín dụng.</p><ol><li>Nhận nhu cầu.</li><li>Thu thập dữ liệu được phép.</li><li>AI chuẩn hóa ghi chú.</li><li>Tra cứu điều kiện.</li><li>AI lập bảng so sánh.</li><li>Chuyên viên kiểm tra.</li><li>Tư vấn.</li><li>Lưu hồ sơ.</li></ol><div class='box q'><h4>Điểm bắt buộc</h4><p>Không nhập dữ liệu nhạy cảm vào công cụ không được phép; AI không tự quyết định cấp tín dụng.</p></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 5 · Workflow Challenge</h3><p>Mỗi nhóm trình bày 3 phút.</p><table><tr><th>Tiêu chí</th><th>Điểm</th></tr><tr><td>Trigger/input/output rõ</td><td>2</td></tr><tr><td>AI đặt đúng điểm</td><td>2</td></tr><tr><td>Có kiểm tra con người</td><td>2</td></tr><tr><td>Có xử lý ngoại lệ</td><td>2</td></tr><tr><td>Dễ hiểu</td><td>2</td></tr></table><details><summary>5 câu hỏi củng cố</summary><ol><li>Workflow khác checklist thế nào?</li><li>Human-in-the-loop là gì?</li><li>Bước nào không để AI quyết định?</li><li>Cần lưu gì để truy vết?</li><li>Nêu 1 điểm tự động hóa trong ngành.</li></ol></details></div></div></section>
+<section id='s7' class='session'><div class='hero'><h2>BUỔI 7 · MINI PROJECT CHUYÊN NGÀNH</h2><p><b>Mục tiêu:</b> Tạo sản phẩm AI nhỏ có giá trị sử dụng, quy trình, kiểm thử và demo.</p><div class='badges'><span class='badge'>Project-based learning</span><span class='badge'>Nhóm 4–5 SV</span><span class='badge'>Prototype 1 buổi</span></div></div><div class='tabs'></div>
+<div class='period'><div class='card'><h3>Tiết 1 · Chọn đề tài và xác định vấn đề</h3><div class='grid2'><div class='box log'><h4>Đề tài Logistics</h4><ul><li>Trợ lý phân tích giao trễ.</li><li>Bảng đánh giá nhà cung cấp.</li><li>Trợ lý tổng hợp tồn kho.</li><li>Checklist đơn bất thường.</li><li>Dashboard KPI logistics mô phỏng.</li></ul></div><div class='box fin'><h4>Đề tài Tài chính</h4><ul><li>Trợ lý chuẩn bị gọi KH.</li><li>Bảng so sánh sản phẩm.</li><li>Phân loại phản hồi.</li><li>Trợ lý giải thích khái niệm.</li><li>Mô phỏng phân tích dòng tiền.</li></ul></div></div><p><b>Canvas:</b> Người dùng – Vấn đề – Dữ liệu – AI làm gì – Người làm gì – Đầu ra – Tiêu chí thành công.</p></div></div>
+<div class='period'><div class='card'><h3>Tiết 2 · Thiết kế giải pháp và phân vai</h3><p>Vai trò: trưởng nhóm, dữ liệu, prompt/workflow, kiểm thử, trình bày.</p><div class='box act'><h4>Sản phẩm giữa tiết</h4><p>1 prompt chuẩn + 1 workflow + 1 tiêu chí kiểm thử + 1 ví dụ đầu ra.</p></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 3 · Xây prototype</h3><p>Dùng công cụ AI quen thuộc hoặc mô phỏng bằng tài liệu/slide/web; không bắt buộc lập trình.</p><div class='box teach'><h4>Giảng viên kiểm tra giữa chặng</h4><ul><li>Vấn đề đủ cụ thể?</li><li>Dữ liệu an toàn?</li><li>AI làm đúng việc?</li><li>Đầu ra đo được?</li></ul></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 4 · Kiểm thử và cải tiến</h3><p>Ít nhất 3 test case: bình thường, thiếu dữ liệu, ngoại lệ.</p><table><tr><th>Test</th><th>Đầu vào</th><th>Kỳ vọng</th><th>Kết quả</th><th>Cải tiến</th></tr><tr><td>1</td><td>Đủ</td><td>Đúng cấu trúc</td><td>...</td><td>...</td></tr><tr><td>2</td><td>Thiếu</td><td>AI hỏi lại</td><td>...</td><td>...</td></tr><tr><td>3</td><td>Ngoại lệ</td><td>Cảnh báo</td><td>...</td><td>...</td></tr></table></div></div>
+<div class='period'><div class='card'><h3>Tiết 5 · Demo mini project</h3><p>4 phút demo + 2 phút hỏi đáp.</p><table><tr><th>Tiêu chí</th><th>Trọng số</th></tr><tr><td>Vấn đề rõ</td><td>20%</td></tr><tr><td>Phù hợp ngành</td><td>25%</td></tr><tr><td>AI có kiểm soát</td><td>20%</td></tr><tr><td>Kiểm thử</td><td>20%</td></tr><tr><td>Trình bày</td><td>15%</td></tr></table><details><summary>Câu hỏi phản biện</summary><ol><li>Dữ liệu sai thì sao?</li><li>Ai phát hiện AI sai?</li><li>Tiết kiệm thời gian thật không?</li><li>Điểm nào cần chuyên gia duyệt?</li><li>Triển khai thật cần thêm gì?</li></ol></details></div></div></section>
+<section id='s8' class='session'><div class='hero'><h2>BUỔI 8 · AI CÓ TRÁCH NHIỆM VÀ CÔNG DÂN SỐ</h2><p><b>Mục tiêu:</b> Dùng AI an toàn, tôn trọng dữ liệu, bản quyền, minh bạch và trách nhiệm nghề nghiệp.</p><div class='badges'><span class='badge'>Đạo đức AI</span><span class='badge'>An toàn dữ liệu</span><span class='badge'>Công dân số</span></div></div><div class='tabs'></div>
+<div class='period'><div class='card'><h3>Tiết 1 · 6 nguyên tắc AI có trách nhiệm</h3><ol><li>Đúng quy định.</li><li>Bảo vệ dữ liệu.</li><li>Minh bạch.</li><li>Kiểm tra sai lệch.</li><li>Có người chịu trách nhiệm.</li><li>Không gian lận/gây hại.</li></ol><div class='box act'><h4>Trò chơi</h4><p>Phân loại 8 tình huống: “Được dùng”, “Được dùng nhưng phải kiểm tra”, “Không nên dùng”.</p></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 2 · Dữ liệu, riêng tư và bảo mật</h3><div class='grid2'><div class='box log'><h4>Logistics</h4><p>Dữ liệu tài xế, GPS, khách hàng, hợp đồng, giá mua cần kiểm soát.</p></div><div class='box fin'><h4>Tài chính</h4><p>Số tài khoản, CCCD, lịch sử giao dịch, tín dụng, hồ sơ KH là dữ liệu nhạy cảm.</p></div></div><p><b>Quy tắc lớp:</b> chỉ thực hành bằng dữ liệu giả lập hoặc đã loại thông tin nhận dạng.</p></div></div>
+<div class='period'><div class='card'><h3>Tiết 3 · Hallucination, bias và kiểm chứng</h3><p>Phân biệt: <b>bịa thông tin – suy luận quá mức – thiên lệch dữ liệu</b>.</p><div class='box q'><h4>Checklist 5 bước</h4><ol><li>Kiểm tra nguồn.</li><li>Kiểm tra số liệu.</li><li>So với tài liệu chính thức.</li><li>Tìm dữ liệu thiếu.</li><li>Ghi rõ phần AI hỗ trợ.</li></ol></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 4 · Công dân số trong học tập và nghề nghiệp</h3><p>Danh tính số, dấu vết số, giao tiếp chuyên nghiệp, bảo vệ tài khoản, xác thực thông tin, tôn trọng bản quyền.</p><div class='box act'><h4>Bài tập</h4><p>Xây “10 điều dùng AI trong ngành của tôi”, viết dưới dạng hành động cụ thể.</p></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 5 · Phiên xử tình huống đạo đức AI</h3><p>Mỗi nhóm: 7 phút chuẩn bị + 3 phút tranh luận.</p><div class='grid2'><div class='box log'><h4>Logistics</h4><p>Nhân viên tải file danh sách khách hàng lên AI công cộng để phân tích tuyến.</p></div><div class='box fin'><h4>Tài chính</h4><p>Nhân viên dùng AI tự nhận xét rủi ro KH và gửi thẳng cho cấp phê duyệt.</p></div></div><details><summary>5 câu hỏi củng cố</summary><ol><li>Dữ liệu nhạy cảm là gì?</li><li>Hallucination là gì?</li><li>Tại sao cần người chịu trách nhiệm?</li><li>Khi nào phải minh bạch dùng AI?</li><li>Nêu 2 nguyên tắc công dân số.</li></ol></details></div></div></section>
+<section id='s9' class='session'><div class='hero'><h2>BUỔI 9 · DIGITAL COMPETENCY SHOWCASE</h2><p><b>Mục tiêu:</b> Tổng hợp năng lực số và AI, trình bày sản phẩm, phản biện và lập kế hoạch phát triển cá nhân.</p><div class='badges'><span class='badge'>Showcase</span><span class='badge'>Portfolio</span><span class='badge'>Peer review</span></div></div><div class='tabs'></div>
+<div class='period'><div class='card'><h3>Tiết 1 · Ôn tập năng lực số cốt lõi</h3><p>6 nhóm: <b>Thông tin & dữ liệu – Giao tiếp số – Tạo nội dung số – An toàn – Giải quyết vấn đề – Sử dụng AI</b>.</p><div class='box act'><h4>6 góc năng lực</h4><p>Mỗi nhóm chọn 1 năng lực và viết 3 minh chứng từ các buổi học.</p></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 2 · Chuẩn bị hồ sơ năng lực số</h3><p>Portfolio gồm: vấn đề, prompt, workflow, sản phẩm AI, bài học, nguyên tắc trách nhiệm.</p><div class='box teach'><h4>Mẫu 5 trang</h4><ol><li>Tôi giải quyết gì?</li><li>Tôi dùng AI thế nào?</li><li>Workflow.</li><li>Kết quả.</li><li>Tôi sẽ cải tiến gì?</li></ol></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 3 · Showcase vòng 1</h3><p>Nửa số nhóm trình bày; nhóm còn lại phản hồi “2 sao + 1 điều cải thiện”.</p><table><tr><th>Tiêu chí</th><th>Câu hỏi</th></tr><tr><td>Giá trị</td><td>Giải quyết vấn đề thật?</td></tr><tr><td>Năng lực số</td><td>Dữ liệu/công cụ hợp lý?</td></tr><tr><td>AI</td><td>Có kiểm tra/kiểm soát?</td></tr></table></div></div>
+<div class='period'><div class='card'><h3>Tiết 4 · Showcase vòng 2 + phản biện chéo</h3><p>Nửa nhóm còn lại trình bày. Mỗi nhóm phải trả lời ít nhất 1 câu phản biện.</p><div class='box q'><h4>Câu hỏi mẫu</h4><ol><li>Nếu không có AI, làm cách nào?</li><li>AI làm tốt hơn người ở đâu?</li><li>Phần nào bắt buộc người kiểm tra?</li><li>Rủi ro dữ liệu nào?</li><li>Đo hiệu quả bằng KPI gì?</li></ol></div></div></div>
+<div class='period'><div class='card'><h3>Tiết 5 · Tự đánh giá và kế hoạch 30 ngày</h3><p>Tự chấm 1–5 và chọn 2 năng lực cần cải thiện.</p><table><tr><th>Năng lực</th><th>Tự chấm 1–5</th><th>Việc làm 30 ngày</th></tr><tr><td>Kiểm chứng thông tin</td><td></td><td></td></tr><tr><td>Phân tích dữ liệu</td><td></td><td></td></tr><tr><td>Prompt & AI</td><td></td><td></td></tr><tr><td>Workflow</td><td></td><td></td></tr><tr><td>An toàn số</td><td></td><td></td></tr><tr><td>Trình bày số</td><td></td><td></td></tr></table><details><summary>Phiếu kết thúc</summary><ol><li>Điều hữu ích nhất?</li><li>Sẽ dùng AI cho việc nào?</li><li>Không giao hoàn toàn cho AI việc gì?</li><li>Cần luyện gì thêm?</li><li>Một nguyên tắc AI có trách nhiệm bạn cam kết?</li></ol></details></div></div></section>
+</main></div><script>
+const labs=['Tiết 1','Tiết 2','Tiết 3','Tiết 4','Tiết 5'];document.querySelectorAll('.session').forEach(s=>{const tabs=s.querySelector('.tabs'),ps=s.querySelectorAll('.period');labs.forEach((x,i)=>{const b=document.createElement('button');b.className='tab'+(i===0?' active':'');b.textContent=x;b.onclick=()=>{ps.forEach((p,j)=>p.classList.toggle('active',i===j));tabs.querySelectorAll('button').forEach((q,j)=>q.classList.toggle('active',i===j));scrollTo({top:100,behavior:'smooth'})};tabs.appendChild(b)});ps[0]?.classList.add('active')});document.querySelectorAll('.nav[data-s]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav[data-s]').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.session').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.s).classList.add('active');scrollTo({top:0,behavior:'smooth'})});let big=false;function fontSize(){big=!big;document.body.style.fontSize=big?'22px':'19px'}let it;
+document.querySelectorAll('.quiz').forEach(q=>{q.querySelectorAll('.quiz-option').forEach(b=>{b.addEventListener('click',()=>{const a=Number(q.dataset.answer),c=Number(b.dataset.i),f=q.querySelector('.quiz-feedback');q.querySelectorAll('.quiz-option').forEach(x=>x.disabled=true);if(c===a){f.textContent='✓ Chính xác!';f.className='quiz-feedback ok'}else{f.textContent='✗ Chưa đúng. Hãy xem lại nội dung phía trên.';f.className='quiz-feedback bad'}})})});
+let timerInterval=null;
+let audioCtx=null;
+
+function playAlarm(){
+  try{
+    const AudioContext=window.AudioContext||window.webkitAudioContext;
+    if(!AudioContext) return;
+    if(!audioCtx) audioCtx=new AudioContext();
+    const now=audioCtx.currentTime;
+    const pattern=[0,0.28,0.56,0.92,1.20,1.48];
+    pattern.forEach((offset,idx)=>{
+      const osc=audioCtx.createOscillator();
+      const gain=audioCtx.createGain();
+      osc.type=idx%2===0?'square':'sine';
+      osc.frequency.setValueAtTime(idx%2===0?880:660,now+offset);
+      gain.gain.setValueAtTime(0.0001,now+offset);
+      gain.gain.exponentialRampToValueAtTime(0.32,now+offset+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001,now+offset+0.20);
+      osc.connect(gain);gain.connect(audioCtx.destination);
+      osc.start(now+offset);osc.stop(now+offset+0.22);
+    });
+  }catch(e){}
+}
+
+function showTimeUp(){
+  const overlay=document.getElementById('timeupOverlay');
+  if(overlay) overlay.classList.add('show');
+  playAlarm();
+}
+
+function timer(min){
+  const minutes=Number(min);
+  if(!Number.isFinite(minutes)||minutes<=0) return;
+  clearInterval(timerInterval);
+  let sec=Math.round(minutes*60);
+  const el=document.getElementById('timer');
+  const render=()=>{
+    const m=Math.floor(sec/60),s=sec%60;
+    if(el) el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  };
+  render();
+  timerInterval=setInterval(()=>{
+    sec--;
+    render();
+    if(sec<=0){
+      clearInterval(timerInterval);
+      timerInterval=null;
+      if(el) el.textContent='00:00';
+      showTimeUp();
+    }
+  },1000);
+}
+
+function stopTimer(){
+  clearInterval(timerInterval);
+  timerInterval=null;
+  const el=document.getElementById('timer');
+  if(el) el.textContent='00:00';
+}
+
+const customStart=document.getElementById('customStart');
+if(customStart){
+  customStart.addEventListener('click',()=>{
+    const input=document.getElementById('customMinutes');
+    let val=Number(input?.value);
+    if(!Number.isFinite(val)||val<1){
+      alert('Vui lòng nhập số phút từ 1 đến 180.');
+      return;
+    }
+    val=Math.min(180,Math.max(1,Math.round(val)));
+    input.value=val;
+    timer(val);
+  });
+}
+
+const timerStop=document.getElementById('timerStop');
+if(timerStop) timerStop.addEventListener('click',stopTimer);
+
+const timeupClose=document.getElementById('timeupClose');
+if(timeupClose){
+  timeupClose.addEventListener('click',()=>{
+    const overlay=document.getElementById('timeupOverlay');
+    if(overlay) overlay.classList.remove('show');
+  });
+}
+
+
+document.querySelectorAll('.gift-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item=btn.closest('.gift-item');
+    const open=item.classList.toggle('open');
+    btn.textContent=open?'🎁 Đã mở – bấm để ẩn đáp án':'🎁 Mở hộp quà để xem đáp án';
+  });
+});
+
+const layoutEl=document.querySelector('.layout');
+const menuToggle=document.getElementById('menuToggle');
+const menuMini=document.getElementById('menuMini');
+
+function setMenuCollapsed(collapsed){
+  if(!layoutEl) return;
+  layoutEl.classList.toggle('menu-collapsed',collapsed);
+  if(menuToggle) menuToggle.textContent=collapsed?'☰ Hiện menu':'☰ Ẩn menu';
+}
+if(menuToggle){
+  menuToggle.addEventListener('click',()=>{
+    const collapsed=!layoutEl.classList.contains('menu-collapsed');
+    setMenuCollapsed(collapsed);
+  });
+}
+if(menuMini){
+  menuMini.addEventListener('click',()=>setMenuCollapsed(false));
+}
+
+</script>
+<div id='timeupOverlay' class='timeup-overlay' role='dialog' aria-modal='true' aria-labelledby='timeupTitle'>
+  <div class='timeup-box'>
+    <div class='timeup-icon' aria-hidden='true'>⏰</div>
+    <div id='timeupTitle' class='timeup-title'>HẾT THỜI GIAN!</div>
+    <p class='timeup-text'>Đã kết thúc thời gian hoạt động nhóm. Mời các nhóm dừng thảo luận và chuẩn bị trình bày.</p>
+    <button id='timeupClose' class='timeup-close' type='button'>Đã rõ</button>
+  </div>
+</div>
+
+</body></html>
